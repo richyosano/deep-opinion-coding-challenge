@@ -1,37 +1,35 @@
 import { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import { faker } from '@faker-js/faker';
+import VirtualizedTable from './components/VirtualizedTable';
 
-type Product = {
+export type Product = {
 	id: number;
 	name: string;
 	description: string;
 	price: string;
 };
 
+const randomProducts: Product[] = [...Array(200000).keys()].map((key) => {
+	return {
+		id: key,
+		name: `${faker.commerce.productName()}`,
+		description: `${faker.commerce.productDescription()}`,
+		price: faker.commerce.price(),
+	};
+});
+
 function App() {
-	const [productsList, setProductsList] = useState<Product[]>([]);
-
-	useEffect(() => {
-		const randomProducts: Product[] = [...Array(10).keys()].map((key) => {
-			return {
-				id: key,
-				name: `${faker.commerce.productName()}`,
-				description: `${faker.commerce.productDescription()}`,
-				price: faker.commerce.price(),
-			};
-		});
-
-		setProductsList(randomProducts);
-	}, []);
+	const [productsList, setProductsList] = useState<Product[]>(randomProducts);
+	const SETTINGS = {
+		itemHeight: 75,
+		visibleItems: 9,
+		tolerance: 3,
+		minIndex: 0,
+		maxIndex: productsList.length - 1,
+		startIndex: 0,
+	};
 
 	const handleAddNewProduct = () => {
 		const newProduct: Product = {
@@ -41,6 +39,17 @@ function App() {
 			price: faker.commerce.price(),
 		};
 		setProductsList([...productsList, newProduct]);
+	};
+
+	const getData = (offset: number, limit: number) => {
+		var data: Product[] = [];
+		const start = Math.max(SETTINGS.minIndex, offset);
+		const end = Math.min(offset + limit - 1, SETTINGS.maxIndex);
+
+		if (start <= end) {
+			data = productsList.slice(start, end + 1);
+		}
+		return data;
 	};
 
 	return (
@@ -67,39 +76,7 @@ function App() {
 				</Button>
 			</div>
 
-			<TableContainer
-				component={Paper}
-				variant='outlined'
-				sx={{ maxHeight: '80vh' }}
-			>
-				<Table sx={{ minWidth: 650 }} aria-label='virtualized table' stickyHeader>
-					<TableHead>
-						<TableRow>
-							<TableCell width={'20%'}>Product Name</TableCell>
-							<TableCell width={'65%'} align='left'>
-								Description
-							</TableCell>
-							<TableCell width={'15%'} align='center'>
-								Price&nbsp;($)
-							</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{productsList.map((product) => (
-							<TableRow
-								key={product.id}
-								sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-							>
-								<TableCell component='th' scope='row'>
-									{product.name}
-								</TableCell>
-								<TableCell align='left'>{product.description}</TableCell>
-								<TableCell align='center'>{product.price}</TableCell>
-							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			</TableContainer>
+			<VirtualizedTable get={getData} settings={SETTINGS} />
 		</div>
 	);
 }
