@@ -6,6 +6,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Zoom from '@mui/material/Zoom';
+import Tooltip from '@mui/material/Tooltip';
+import Fab from '@mui/material/Fab';
+import ArrowUpIcon from '@mui/icons-material/KeyboardArrowUpRounded';
 import { Product } from '../App';
 
 type Settings = {
@@ -109,9 +113,46 @@ class VirtualizedTable extends Component<Props, State> {
 		});
 	};
 
+	scrollToTop = () => {
+		const viewportElement = this.viewportElement.current;
+		if (viewportElement) viewportElement.scroll({ top: 0, behavior: 'smooth' });
+	};
+
 	render() {
-		const { viewportHeight, topPaddingHeight, bottomPaddingHeight, data } =
-			this.state;
+		const {
+			viewportHeight,
+			topPaddingHeight,
+			bottomPaddingHeight,
+			data,
+			initialPosition,
+			settings: { itemHeight },
+		} = this.state;
+		const currentScrollPosition =
+			this.viewportElement.current?.scrollTop ?? initialPosition;
+
+		const scrollToTopButton = (
+			<Zoom in={currentScrollPosition > itemHeight} timeout={300} unmountOnExit>
+				<Tooltip title='Scroll to top' placement='top'>
+					<Fab
+						color='primary'
+						size='medium'
+						variant='circular'
+						sx={{
+							position: 'fixed',
+							bottom: 70,
+							right: 45,
+							zIndex: 10,
+							backgroundColor: '#4186cb',
+							boxShadow: 0,
+						}}
+						onClick={this.scrollToTop}
+					>
+						<ArrowUpIcon />
+					</Fab>
+				</Tooltip>
+			</Zoom>
+		);
+
 		return (
 			<TableContainer
 				component={Paper}
@@ -120,14 +161,24 @@ class VirtualizedTable extends Component<Props, State> {
 				onScroll={this.runScroller}
 				sx={{ height: viewportHeight }}
 			>
-				<Table sx={{ minWidth: 650 }} aria-label='virtualized table' stickyHeader>
+				<Table sx={{ minWidth: 835 }} aria-label='virtualized table' stickyHeader>
 					<TableHead>
 						<TableRow>
-							<TableCell width={'20%'}>Product Name</TableCell>
-							<TableCell width={'65%'} align='left'>
+							<TableCell sx={{ backgroundColor: '#f7f7f7' }} width={'20%'}>
+								Product Name
+							</TableCell>
+							<TableCell
+								sx={{ backgroundColor: '#f7f7f7' }}
+								width={'65%'}
+								align='left'
+							>
 								Description
 							</TableCell>
-							<TableCell width={'15%'} align='center'>
+							<TableCell
+								sx={{ backgroundColor: '#f7f7f7' }}
+								width={'15%'}
+								align='center'
+							>
 								Price&nbsp;($)
 							</TableCell>
 						</TableRow>
@@ -144,10 +195,18 @@ class VirtualizedTable extends Component<Props, State> {
 								<TableCell component='th' scope='row' height={42}>
 									{product.name}
 								</TableCell>
-								<TableCell align='left' height={42}>
+								<TableCell
+									align='left'
+									height={42}
+									sx={{ color: 'GrayText' }}
+								>
 									{product.description}
 								</TableCell>
-								<TableCell align='center' height={42}>
+								<TableCell
+									align='center'
+									height={42}
+									sx={{ color: '#e0ac11', fontWeight: 500 }}
+								>
 									{product.price}
 								</TableCell>
 							</TableRow>
@@ -155,6 +214,7 @@ class VirtualizedTable extends Component<Props, State> {
 						<tr style={{ height: bottomPaddingHeight }} />
 					</TableBody>
 				</Table>
+				{scrollToTopButton}
 			</TableContainer>
 		);
 	}

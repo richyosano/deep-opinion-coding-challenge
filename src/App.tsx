@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { faker } from '@faker-js/faker';
 import VirtualizedTable from './components/VirtualizedTable';
+import AddIcon from '@mui/icons-material/PostAddRounded';
 
 export type Product = {
 	id: number;
@@ -59,7 +60,7 @@ function App() {
 					variant='h5'
 					sx={{ marginBottom: 3, fontWeight: 500, flexGrow: 1 }}
 				>
-					Available Products
+					Available Products {`(${productsList.length.toLocaleString()})`}
 				</Typography>
 				<Button
 					variant='contained'
@@ -69,10 +70,12 @@ function App() {
 						height: 'fit-content',
 						borderRadius: 1,
 						backgroundColor: '#4186cb',
+						fontWeight: 400,
 					}}
 					onClick={handleAddNewProduct}
+					startIcon={<AddIcon />}
 				>
-					Add New Product
+					New Product
 				</Button>
 			</div>
 
