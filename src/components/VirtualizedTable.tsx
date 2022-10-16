@@ -133,7 +133,7 @@ class VirtualizedTable extends Component<Props, State> {
 			toleranceHeight,
 			bufferedItems,
 			bottomPaddingHeight,
-			settings: { itemHeight, minIndex, visibleItems },
+			settings: { itemHeight, minIndex },
 		} = this.state;
 		if (
 			prevProps.settings.maxIndex !== this.props.settings.maxIndex &&
