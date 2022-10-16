@@ -118,6 +118,49 @@ class VirtualizedTable extends Component<Props, State> {
 		if (viewportElement) viewportElement.scroll({ top: 0, behavior: 'smooth' });
 	};
 
+	scrollToBottom = () => {
+		const { viewportHeight } = this.state;
+		const viewportElement = this.viewportElement.current;
+		if (viewportElement)
+			viewportElement.scroll({
+				top: viewportElement.scrollHeight - viewportHeight,
+				behavior: 'smooth',
+			});
+	};
+
+	componentDidUpdate(prevProps: Props, prevState: State) {
+		const {
+			viewportHeight,
+			toleranceHeight,
+			bufferedItems,
+			bottomPaddingHeight,
+			settings: { itemHeight, minIndex, visibleItems },
+		} = this.state;
+		if (
+			prevProps.settings.maxIndex !== this.props.settings.maxIndex &&
+			bottomPaddingHeight === 0
+		) {
+			const scrollTop = this.viewportElement.current?.scrollTop ?? 0;
+			const index =
+				minIndex + Math.floor((scrollTop - toleranceHeight) / itemHeight);
+			const data = this.props.get(index, bufferedItems);
+			const totalHeight =
+				(this.props.settings.maxIndex - minIndex + 1) * itemHeight;
+			this.setState({
+				data,
+				totalHeight,
+			});
+		}
+
+		if (
+			prevState.data !== this.state.data &&
+			prevState.totalHeight !== this.state.totalHeight &&
+			bottomPaddingHeight === 0
+		) {
+			this.scrollToBottom();
+		}
+	}
+
 	render() {
 		const {
 			viewportHeight,
@@ -146,6 +189,7 @@ class VirtualizedTable extends Component<Props, State> {
 							boxShadow: 0,
 						}}
 						onClick={this.scrollToTop}
+						data-testid='scrollToTop'
 					>
 						<ArrowUpIcon />
 					</Fab>
@@ -160,6 +204,7 @@ class VirtualizedTable extends Component<Props, State> {
 				ref={this.viewportElement}
 				onScroll={this.runScroller}
 				sx={{ height: viewportHeight }}
+				data-testid={'virtualizedTableContainer'}
 			>
 				<Table sx={{ minWidth: 835 }} aria-label='virtualized table' stickyHeader>
 					<TableHead>
@@ -191,6 +236,7 @@ class VirtualizedTable extends Component<Props, State> {
 								sx={{
 									'&:last-child td, &:last-child th': { border: 0 },
 								}}
+								data-testid={`tableItem_${product.id}`}
 							>
 								<TableCell component='th' scope='row' height={42}>
 									{product.name}

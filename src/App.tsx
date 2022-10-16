@@ -54,11 +54,12 @@ function App() {
 	};
 
 	return (
-		<div style={{ padding: 24 }}>
+		<div style={{ padding: 24 }} id='appContainer'>
 			<div style={{ display: 'flex', textAlign: 'center' }}>
 				<Typography
 					variant='h5'
 					sx={{ marginBottom: 3, fontWeight: 500, flexGrow: 1 }}
+					data-testid={'pageTitle'}
 				>
 					Available Products {`(${productsList.length.toLocaleString()})`}
 				</Typography>
@@ -74,6 +75,7 @@ function App() {
 					}}
 					onClick={handleAddNewProduct}
 					startIcon={<AddIcon />}
+					data-testid='newProductBtn'
 				>
 					New Product
 				</Button>
