@@ -130,7 +130,6 @@ class VirtualizedTable extends Component<Props, State> {
 
 	componentDidUpdate(prevProps: Props, prevState: State) {
 		const {
-			viewportHeight,
 			toleranceHeight,
 			bufferedItems,
 			bottomPaddingHeight,
