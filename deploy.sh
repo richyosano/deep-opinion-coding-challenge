@@ -12,12 +12,7 @@ cd dist
 # place .nojekyll to bypass Jekyll processing
 echo > .nojekyll
 
-git init
-git checkout -B master
-git add -A
-git commit -m 'deploy'
-
 # if you are deploying to https://<USERNAME>.github.io/<REPO>
-git push -f git@github.com:richyosano/deep-opinion-coding-challenge.git master:gh-pages
+git push -f https://github.com/richyosano/deep-opinion-coding-challenge.git master:gh-pages
 
 cd -
