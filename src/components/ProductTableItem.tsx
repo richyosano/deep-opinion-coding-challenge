@@ -1,6 +1,6 @@
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
-import { Product } from '../types';
+import { Product } from './types';
 
 export const ProductTableItem = ({ product }: { product: Product }) => {
 	return (

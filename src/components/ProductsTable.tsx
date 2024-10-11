@@ -6,9 +6,9 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { ScrollToTopButton } from '../ScrollToTopButton';
+import { ScrollToTopButton } from './ScrollToTopButton';
 import { ProductTableItem } from './ProductTableItem';
-import { Product } from '../types';
+import { Product } from './types';
 
 interface ProductsTableProps {
 	viewportElement: React.RefObject<HTMLDivElement>;

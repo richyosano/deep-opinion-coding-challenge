@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import { Product, Settings, TableState } from './types';
-import { ProductsTable } from './Products/ProductsTable';
+import { ProductsTable } from './ProductsTable';
 
 type Props = {
 	state: TableState;
