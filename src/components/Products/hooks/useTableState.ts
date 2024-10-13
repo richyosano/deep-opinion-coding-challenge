@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { Settings, TableState, Product } from '../types';
 
-export const useInitialState = (settings: Settings): TableState => {
+export const useTableState = (settings: Settings) => {
 	const { itemHeight, visibleItems, tolerance, minIndex, maxIndex, startIndex } =
 		settings;
 	const viewportHeight = visibleItems * itemHeight;
@@ -14,7 +15,7 @@ export const useInitialState = (settings: Settings): TableState => {
 	const initialPosition = topPaddingHeight + toleranceHeight;
 	const data: Product[] = [];
 
-	return {
+	const [state, setState] = useState<TableState>({
 		settings,
 		viewportHeight,
 		totalHeight,
@@ -25,5 +26,10 @@ export const useInitialState = (settings: Settings): TableState => {
 		bottomPaddingHeight,
 		initialPosition,
 		data,
+	});
+
+	return {
+		state,
+		setState,
 	};
 };

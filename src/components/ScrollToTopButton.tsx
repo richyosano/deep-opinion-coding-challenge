@@ -9,30 +9,32 @@ interface ScrollToTopButtonProps {
 	scrollToTop: () => void;
 }
 
-export const ScrollToTopButton = ({
+export default function ScrollToTopButton({
 	currentScrollPosition,
 	itemHeight,
 	scrollToTop,
-}: ScrollToTopButtonProps) => (
-	<Zoom in={currentScrollPosition > itemHeight} timeout={300} unmountOnExit>
-		<Tooltip title='Scroll to top' placement='top'>
-			<Fab
-				color='primary'
-				size='medium'
-				variant='circular'
-				sx={{
-					position: 'fixed',
-					bottom: 70,
-					right: 45,
-					zIndex: 10,
-					backgroundColor: '#4186cb',
-					boxShadow: 0,
-				}}
-				onClick={scrollToTop}
-				data-testid='scrollToTop'
-			>
-				<ArrowUpIcon />
-			</Fab>
-		</Tooltip>
-	</Zoom>
-);
+}: ScrollToTopButtonProps) {
+	return (
+		<Zoom in={currentScrollPosition > itemHeight} timeout={300} unmountOnExit>
+			<Tooltip title='Scroll to top' placement='top'>
+				<Fab
+					color='primary'
+					size='medium'
+					variant='circular'
+					sx={{
+						position: 'fixed',
+						bottom: 70,
+						right: 45,
+						zIndex: 10,
+						backgroundColor: '#4186cb',
+						boxShadow: 0,
+					}}
+					onClick={scrollToTop}
+					data-testid='scrollToTop'
+				>
+					<ArrowUpIcon />
+				</Fab>
+			</Tooltip>
+		</Zoom>
+	);
+}

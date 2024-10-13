@@ -1,23 +1,20 @@
-import React, { useEffect, useRef, useCallback } from 'react';
-import { Product, Settings, TableState } from './types';
-import { ProductsTable } from './ProductsTable';
+import { useEffect, useRef, useCallback } from 'react';
+import { Product, Settings } from '../types';
+import { useTableState } from './useTableState';
 
-type Props = {
-	state: TableState;
-	setState: React.Dispatch<React.SetStateAction<TableState>>;
-	getData: (offset: number, limit: number) => Product[];
-	settings: Settings;
-	viewportElement: React.RefObject<HTMLDivElement>;
-};
-
-const VirtualizedTable: React.FC<Props> = ({
-	state,
-	setState,
-	getData,
-	settings,
-	viewportElement,
-}) => {
+export const useVirtualizedTable = (tableItems: Product[], settings: Settings) => {
+	const { state, setState } = useTableState(settings);
+	const viewportElement = useRef<HTMLDivElement>(null);
 	const hasComponentBeenRendered = useRef(false);
+
+	const getData = useCallback(
+		(offset: number, limit: number): Product[] => {
+			const start = Math.max(settings.minIndex, offset);
+			const end = Math.min(offset + limit - 1, settings.maxIndex);
+			return start <= end ? tableItems.slice(start, end + 1) : [];
+		},
+		[settings.maxIndex]
+	);
 
 	const scrollToTop = useCallback(() => {
 		const viewport = viewportElement.current;
@@ -100,21 +97,5 @@ const VirtualizedTable: React.FC<Props> = ({
 		hasComponentBeenRendered.current = true;
 	}, [settings.maxIndex]);
 
-	return (
-		<ProductsTable
-			viewportElement={viewportElement}
-			runScroller={runScroller}
-			viewportHeight={state.viewportHeight}
-			topPaddingHeight={state.topPaddingHeight}
-			data={state.data}
-			bottomPaddingHeight={state.bottomPaddingHeight}
-			currentScrollPosition={
-				viewportElement.current?.scrollTop ?? state.initialPosition
-			}
-			itemHeight={settings.itemHeight}
-			scrollToTop={scrollToTop}
-		/>
-	);
+	return { state, viewportElement, runScroller, scrollToTop };
 };
-
-export default VirtualizedTable;

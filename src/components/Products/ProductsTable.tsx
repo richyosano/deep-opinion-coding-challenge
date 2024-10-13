@@ -1,4 +1,3 @@
-import React from 'react';
 import Table from '@mui/material/Table';
 import TableContainer from '@mui/material/TableContainer';
 import TableBody from '@mui/material/TableBody';
@@ -6,33 +5,36 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { ScrollToTopButton } from './ScrollToTopButton';
-import { ProductTableItem } from './ProductTableItem';
-import { Product } from './types';
+import ScrollToTopButton from '../ScrollToTopButton';
+import ProductTableItem from './ProductTableItem';
+import { useVirtualizedTable } from './hooks/useVirtualizedTable';
+import { useProductsContext } from './hooks/ProductsContext';
+import { Settings } from './types';
 
-interface ProductsTableProps {
-	viewportElement: React.RefObject<HTMLDivElement>;
-	runScroller: (scrollTop: number) => void;
-	viewportHeight: number;
-	topPaddingHeight: number;
-	data: Product[];
-	bottomPaddingHeight: number;
-	currentScrollPosition: number;
-	itemHeight: number;
-	scrollToTop: () => void;
-}
+export default function ProductsTable() {
+	const { products } = useProductsContext();
+	const SETTINGS: Settings = {
+		itemHeight: 75,
+		visibleItems: 9,
+		tolerance: 3,
+		minIndex: 0,
+		maxIndex: products.length - 1,
+		startIndex: 0,
+	};
+	const { state, viewportElement, runScroller, scrollToTop } = useVirtualizedTable(
+		products,
+		SETTINGS
+	);
+	const {
+		viewportHeight,
+		topPaddingHeight,
+		data,
+		bottomPaddingHeight,
+		settings: { itemHeight },
+	} = state;
+	const currentScrollPosition =
+		viewportElement.current?.scrollTop ?? state.initialPosition;
 
-export const ProductsTable: React.FC<ProductsTableProps> = ({
-	viewportElement,
-	runScroller,
-	viewportHeight,
-	topPaddingHeight,
-	data,
-	bottomPaddingHeight,
-	currentScrollPosition,
-	itemHeight,
-	scrollToTop,
-}) => {
 	return (
 		<TableContainer
 			component={Paper}
@@ -67,7 +69,7 @@ export const ProductsTable: React.FC<ProductsTableProps> = ({
 				<TableBody>
 					<tr style={{ height: topPaddingHeight }} />
 					{data.map((product) => (
-						<ProductTableItem key={product.id} product={product} />
+						<ProductTableItem product={product} />
 					))}
 					<tr style={{ height: bottomPaddingHeight }} />
 				</TableBody>
@@ -79,4 +81,4 @@ export const ProductsTable: React.FC<ProductsTableProps> = ({
 			/>
 		</TableContainer>
 	);
-};
+}

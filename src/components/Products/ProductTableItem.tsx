@@ -2,7 +2,7 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import { Product } from './types';
 
-export const ProductTableItem = ({ product }: { product: Product }) => {
+export default function ProductTableItem({ product }: { product: Product }) {
 	return (
 		<TableRow
 			key={product.id}
@@ -26,4 +26,4 @@ export const ProductTableItem = ({ product }: { product: Product }) => {
 			</TableCell>
 		</TableRow>
 	);
-};
+}
