@@ -31,15 +31,14 @@ export const useVirtualizedTable = (tableItems: Product[], settings: Settings) =
 	}, [state.initialPosition, viewportElement]);
 
 	const scrollToBottom = useCallback(() => {
-		const { viewportHeight } = state;
 		const viewport = viewportElement.current;
 		if (viewport) {
 			viewport.scroll({
-				top: viewport.scrollHeight - viewportHeight,
+				top: viewport.scrollHeight - state.viewportHeight,
 				behavior: 'smooth',
 			});
 		}
-	}, [state]);
+	}, [state.viewportHeight]);
 
 	const runScroller = useCallback(
 		(scrollTop: number) => {
